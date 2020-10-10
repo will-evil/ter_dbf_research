@@ -11,6 +11,13 @@ func SpacesStat(spaceStat *statistics.SpacesStat) {
 	fmt.Println("NumRows:", spaceStat.NumRows)
 	fmt.Println("NumRecords:", spaceStat.NumRecords)
 	printSpaceSatFieldData("Nameu", spaceStat.Nameu)
+	printSpaceSatFieldData("Descript", spaceStat.Descript)
+	printSpaceSatFieldData("Amr", spaceStat.Amr)
+	printSpaceSatFieldData("Address", spaceStat.Address)
+	printSpaceSatFieldData("Mr", spaceStat.Mr)
+	printSpaceSatFieldData("Director", spaceStat.Director)
+	printSpaceSatFieldData("Founder", spaceStat.Founder)
+	printSpaceSatFieldData("Terrtype", spaceStat.Terrtype)
 }
 
 func printSpaceSatFieldData(name string, fieldStat statistics.FieldSpaceStat) {
