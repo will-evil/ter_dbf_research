@@ -10,7 +10,6 @@ import (
 )
 
 // Struct for store info about row from dbf terrorist file.
-// This struct stores row index in file and value of column ROW-ID.
 type rowData struct {
 	index int
 }
@@ -55,6 +54,20 @@ func (s *Stat) Spaces() (*SpacesStat, error) {
 	}
 
 	return ss, nil
+}
+
+// Dup counts duplicates in separated fields.
+func (s *Stat) Dup() (*DupStat, error) {
+	rowDataMap, err := s.getRowDataMap()
+	if err != nil {
+		return nil, err
+	}
+	ds := NewDupStat(s.dbfTable, rowDataMap)
+	if err := ds.StatsForAll(); err != nil {
+		return nil, err
+	}
+
+	return ds, nil
 }
 
 func (s *Stat) getRowDataMap() (*rowDataMap, error) {
