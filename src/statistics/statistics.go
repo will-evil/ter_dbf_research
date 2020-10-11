@@ -29,7 +29,6 @@ func NewStat(filePath string) (*Stat, error) {
 	}
 
 	dbfTable, err := godbf.NewFromFile(filePath, "866")
-	dbfTable.NumberOfRecords()
 	if err != nil {
 		return nil, err
 	}
