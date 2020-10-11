@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var dupShort bool
+
 var dupCmd = &cobra.Command{
 	Use:   "dup",
 	Short: "Counts duplicates for separated fields for one record in dbf file",
@@ -33,7 +35,13 @@ var dupCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			fmt.Printf("Statistics for file %s\n", path)
-			statprint.DupStat(dupStat, true)
+			statprint.DupStat(dupStat, !dupShort)
 		}
 	},
+}
+
+func getDupCmd() *cobra.Command {
+	dupCmd.Flags().BoolVar(&dupShort, "short", false, "print short statistics")
+
+	return dupCmd
 }
