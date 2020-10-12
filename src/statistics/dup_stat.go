@@ -2,7 +2,6 @@ package statistics
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/LindsayBradford/go-dbf/godbf"
 )
@@ -38,17 +37,8 @@ func NewDupStat(dbfTable *godbf.DbfTable, rowDataMap *rowDataMap) *DupStat {
 
 // StatsForAll calculates statistics for all records
 func (ds *DupStat) StatsForAll() error {
-	for i := 0; i < ds.dbfTable.NumberOfRecords(); i++ {
-		numberStr, err := ds.dbfTable.FieldValueByName(i, "NUMBER")
-		if err != nil {
-			return err
-		}
-		number, err := strconv.ParseUint(numberStr, 10, 64)
-		if err != nil {
-			return err
-		}
-
-		if err := ds.processRowForDup(number); err != nil {
+	for number, rowDataSlice := range *ds.rowDataMap {
+		if err := ds.processRowForDup(number, rowDataSlice); err != nil {
 			return nil
 		}
 	}
@@ -56,8 +46,7 @@ func (ds *DupStat) StatsForAll() error {
 	return nil
 }
 
-func (ds *DupStat) processRowForDup(number uint64) error {
-	rowPartsData := (*ds.rowDataMap)[number]
+func (ds *DupStat) processRowForDup(number uint64, rowPartsData []rowData) error {
 	if len(rowPartsData) < 2 {
 		return nil
 	}
