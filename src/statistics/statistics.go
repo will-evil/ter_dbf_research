@@ -6,7 +6,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/LindsayBradford/go-dbf/godbf"
+	"ter_dbf_research/src/godbf"
 )
 
 // Struct for store info about row from dbf terrorist file.

@@ -1,6 +1,6 @@
 package statistics
 
-import "github.com/LindsayBradford/go-dbf/godbf"
+import "ter_dbf_research/src/godbf"
 
 // CommonStat is struct for store common file statistics data.
 type CommonStat struct {

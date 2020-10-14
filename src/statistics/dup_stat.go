@@ -3,7 +3,7 @@ package statistics
 import (
 	"fmt"
 
-	"github.com/LindsayBradford/go-dbf/godbf"
+	"ter_dbf_research/src/godbf"
 )
 
 // FieldDupStat is structure for store duplication statistic for concret field.

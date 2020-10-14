@@ -1,7 +1,7 @@
 package statistics
 
 import (
-	"github.com/LindsayBradford/go-dbf/godbf"
+	"ter_dbf_research/src/godbf"
 )
 
 // FieldSpaceStat is structure for store field statictic.
