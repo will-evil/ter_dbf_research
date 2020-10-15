@@ -9,9 +9,12 @@ import (
 	"ter_dbf_research/src/godbf"
 )
 
+const sepFieldMaxLength = 254
+
 // Struct for store info about row from dbf terrorist file.
 type rowData struct {
 	index int
+	rowID uint64
 }
 
 type rowDataMap map[uint64][]rowData
@@ -88,12 +91,21 @@ func (s *Stat) setRowDataMap() error {
 		if err != nil {
 			return err
 		}
-		number, err := strconv.ParseUint(numberStr, 10, 64)
+		rowIDStr, err := s.dbfTable.FieldValueByName(i, "ROW_ID")
 		if err != nil {
 			return err
 		}
 
-		data := rowData{index: i}
+		number, err := strconv.ParseUint(numberStr, 10, 64)
+		if err != nil {
+			return err
+		}
+		rowID, err := strconv.ParseUint(rowIDStr, 10, 64)
+		if err != nil {
+			return err
+		}
+
+		data := rowData{index: i, rowID: rowID}
 		rowDataMap[number] = append(rowDataMap[number], data)
 	}
 

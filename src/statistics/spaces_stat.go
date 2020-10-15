@@ -1,6 +1,7 @@
 package statistics
 
 import (
+	"sort"
 	"ter_dbf_research/src/godbf"
 )
 
@@ -36,60 +37,76 @@ func NewSpaceStat(dbfTable *godbf.DbfTable, rowDataMap *rowDataMap) *SpacesStat 
 
 // StatsForAll calculates statistics for all records
 func (ss *SpacesStat) StatsForAll() error {
-	for i := 0; i < ss.dbfTable.NumberOfRecords(); i++ {
-		nameu, err := ss.dbfTable.FieldValueByName(i, "NAMEU")
-		if err != nil {
-			return err
-		}
-		countSpaces(nameu, &ss.Nameu)
+	for _, rowDataSlice := range *ss.rowDataMap {
+		sort.SliceStable(rowDataSlice, func(i, j int) bool {
+			return rowDataSlice[i].rowID < rowDataSlice[j].rowID
+		})
 
-		descript, err := ss.dbfTable.FieldValueByName(i, "DESCRIPT")
-		if err != nil {
-			return err
+		sliceSize := len(rowDataSlice)
+		for i := 0; i < sliceSize; i++ {
+			rowData := rowDataSlice[i]
+			err := ss.countSpacesForRow(
+				rowData.index,
+				nextRowIndex(i, rowDataSlice),
+			)
+			if err != nil {
+				return err
+			}
 		}
-		countSpaces(descript, &ss.Descript)
-
-		amr, err := ss.dbfTable.FieldValueByName(i, "AMR")
-		if err != nil {
-			return err
-		}
-		countSpaces(amr, &ss.Amr)
-
-		address, err := ss.dbfTable.FieldValueByName(i, "ADRESS")
-		if err != nil {
-			return err
-		}
-		countSpaces(address, &ss.Address)
-
-		mr, err := ss.dbfTable.FieldValueByName(i, "MR")
-		if err != nil {
-			return err
-		}
-		countSpaces(mr, &ss.Mr)
-
-		director, err := ss.dbfTable.FieldValueByName(i, "DIRECTOR")
-		if err != nil {
-			return err
-		}
-		countSpaces(director, &ss.Director)
-
-		founder, err := ss.dbfTable.FieldValueByName(i, "FOUNDER")
-		if err != nil {
-			return err
-		}
-		countSpaces(founder, &ss.Founder)
-
-		terrtype, err := ss.dbfTable.FieldValueByName(i, "TERRTYPE")
-		if err != nil {
-			return err
-		}
-		countSpaces(terrtype, &ss.Terrtype)
 	}
 
 	return nil
 }
 
-func countSpaces(str string, fieldStat *FieldSpaceStat) {
+func (ss *SpacesStat) countSpacesForRow(rowIndex int, nextRowIndex *int) error {
+	var nextStrPointer *string
+
+	fieldsSet := []struct {
+		name      string
+		fieldStat *FieldSpaceStat
+	}{
+		{"NAMEU", &ss.Nameu},
+		{"DESCRIPT", &ss.Descript},
+		{"AMR", &ss.Amr},
+		{"ADRESS", &ss.Address},
+		{"MR", &ss.Mr},
+		{"DIRECTOR", &ss.Director},
+		{"FOUNDER", &ss.Founder},
+		{"TERRTYPE", &ss.Terrtype},
+	}
+
+	for _, set := range fieldsSet {
+		value, err := ss.dbfTable.FieldValueByName(rowIndex, set.name)
+		if err != nil {
+			return err
+		}
+
+		if nextRowIndex != nil {
+			nextStr, err := ss.dbfTable.FieldValueByName(*nextRowIndex, set.name)
+			if err != nil {
+				return err
+			}
+			nextStrPointer = &nextStr
+		} else {
+			nextStrPointer = nil
+		}
+
+		countSpaces(value, nextStrPointer, set.fieldStat)
+	}
+
+	return nil
+}
+
+func nextRowIndex(currentIndex int, rowDataSlice []rowData) *int {
+	nextIndex := currentIndex + 1
+	if nextIndex < len(rowDataSlice) {
+		return &rowDataSlice[nextIndex].index
+	}
+
+	return nil
+}
+
+func countSpaces(str string, nextStr *string, fieldStat *FieldSpaceStat) {
 	if len(str) == 0 {
 		return
 	}
@@ -99,7 +116,8 @@ func countSpaces(str string, fieldStat *FieldSpaceStat) {
 	if str[0] == ' ' {
 		res++
 	}
-	if str[len(str)-1:] == " " {
+
+	if nextStr != nil && len(*nextStr) > 0 && len(str) == (sepFieldMaxLength-1) {
 		res += 2
 	}
 
