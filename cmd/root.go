@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"ter_dbf_research/src/filesprovider"
 
 	"github.com/spf13/cobra"
 )
@@ -25,4 +26,17 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(spacesCmd)
 	rootCmd.AddCommand(getDupCmd())
+}
+
+func getProvider(args []string) *filesprovider.FileProvider {
+	provider, err := filesprovider.NewFileProvider(args)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if len(provider.Files) == 0 {
+		log.Fatalf("you are not provided any files for research")
+	}
+
+	return provider
 }
