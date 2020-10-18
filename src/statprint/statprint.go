@@ -34,6 +34,15 @@ func DupStat(dupStat *statistics.DupStat, fullPrint bool) {
 	printFieldDupStat("Terrtype", dupStat.Terrtype, fullPrint)
 }
 
+// DateStat prints statistics about date formats.
+func DateStat(dateStat *statistics.DateStat) {
+	fmt.Println("NumRows:", dateStat.NumRows)
+	fmt.Println("NumRecords:", dateStat.NumRecords)
+	printFieldDateStat("Gr", dateStat.Gr)
+	printFieldDateStat("CB_DATE", dateStat.CbDate)
+	printFieldDateStat("CE_DATE", dateStat.CeDate)
+}
+
 func printSpaceSatFieldData(name string, fieldStat statistics.FieldSpaceStat) {
 	prefTab := strings.Repeat(" ", 4)
 	fmt.Printf("%s:\n", name)
@@ -56,4 +65,14 @@ func printFieldDupStat(name string, fieldStat statistics.FieldDupStat, fullPrint
 	for number, count := range fieldStat.NumberCountMap {
 		fmt.Printf("%s%d: %d\n", prefTab, number, count)
 	}
+}
+
+func printFieldDateStat(name string, fieldStat statistics.FieldDateStat) {
+	prefTab := strings.Repeat(" ", 4)
+	fmt.Printf("%s:\n", name)
+	for name, value := range fieldStat.Formats {
+		fmt.Printf("%s%s: %d\n", prefTab, name, value)
+	}
+	fmt.Printf("%sEmpty: %d\n", prefTab, fieldStat.Empty)
+	fmt.Printf("%sOther: %d\n", prefTab, fieldStat.Other)
 }

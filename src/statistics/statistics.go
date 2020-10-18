@@ -72,6 +72,20 @@ func (s *Stat) Dup() (*DupStat, error) {
 	return ds, nil
 }
 
+// Date counts statistics for date formats.
+func (s *Stat) Date() (*DateStat, error) {
+	rowDataMap, err := s.getRowDataMap()
+	if err != nil {
+		return nil, err
+	}
+	ds := NewDateStat(s.dbfTable, rowDataMap)
+	if err := ds.StatsForAll(); err != nil {
+		return nil, err
+	}
+
+	return ds, nil
+}
+
 func (s *Stat) getRowDataMap() (*rowDataMap, error) {
 	var err error
 
