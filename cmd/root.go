@@ -27,6 +27,7 @@ func init() {
 	rootCmd.AddCommand(spacesCmd)
 	rootCmd.AddCommand(getDupCmd())
 	rootCmd.AddCommand(dateCmd)
+	rootCmd.AddCommand(firstRowCmd)
 }
 
 func getProvider(args []string) *filesprovider.FileProvider {

@@ -43,6 +43,16 @@ func DateStat(dateStat *statistics.DateStat) {
 	printFieldDateStat("CE_DATE", dateStat.CeDate)
 }
 
+// FirstRowStat prints statistics about not correct data in firsts rows of records.
+func FirstRowStat(firstRowStat *statistics.FirstRowStat) {
+	fmt.Println("NumRows:", firstRowStat.NumRows)
+	fmt.Println("NumRecords:", firstRowStat.NumRecords)
+	fmt.Println("NotCorrect:", firstRowStat.NotCorrect)
+	fmt.Println("NotCorrectTerror:", firstRowStat.NotCorrectTerror)
+	fmt.Println("NotCorrectTu:", firstRowStat.NotCorrectTu)
+	fmt.Println("NotCorrectKd:", firstRowStat.NotCorrectKd)
+}
+
 func printSpaceSatFieldData(name string, fieldStat statistics.FieldSpaceStat) {
 	prefTab := strings.Repeat(" ", 4)
 	fmt.Printf("%s:\n", name)

@@ -86,6 +86,20 @@ func (s *Stat) Date() (*DateStat, error) {
 	return ds, nil
 }
 
+// FirstRow count num row with correct and not correct data in first row of record.
+func (s *Stat) FirstRow() (*FirstRowStat, error) {
+	rowDataMap, err := s.getRowDataMap()
+	if err != nil {
+		return nil, err
+	}
+	frs := NewFirstRowStat(s.dbfTable, rowDataMap)
+	if err := frs.StatsForAll(); err != nil {
+		return nil, err
+	}
+
+	return frs, nil
+}
+
 func (s *Stat) getRowDataMap() (*rowDataMap, error) {
 	var err error
 
